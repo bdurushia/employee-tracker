@@ -1,76 +1,78 @@
-INSERT INTO department (id, name)
-VALUES (1, 'Upper Management');    -- id 1
+
+--///// DEPARTMENT SEEDS /////--
 INSERT INTO department (name)
-VALUES (2, 'Project Management');  -- id 2
+VALUES ('Upper Management');    -------> id: 1
 INSERT INTO department (name)
-VALUES (3, 'Sales');               -- id 3
+VALUES ('Project Management');  -------> id: 2
 INSERT INTO department (name)
-VALUES (4, 'Finance');             -- id 4
+VALUES ('Sales');               -------> id: 3
 INSERT INTO department (name)
-VALUES (5, 'Service');             -- id 5
+VALUES ('Finance');             -------> id: 4
+INSERT INTO department (name)
+VALUES ('Service');             -------> id: 5
 
+--//////////// ROLE SEEDS ////////////--
+INSERT INTO role (title, salary, department_id)
+VALUES ('CEO', 200000, 1);                      -------> id: 1
 
-INSERT INTO role (id, title, salary, department_id)
-VALUES (1, 'CEO', 200000, 1);
+INSERT INTO role (title, salary, department_id)
+VALUES ('CFO', 200000, 1);                      -------> id: 2
 
-INSERT INTO role (id, title, salary, department_id)
-VALUES (2, 'CFO', 200000, 1);
+INSERT INTO role (title, salary, department_id)
+VALUES ('Head of Operations', 160000, 1);       -------> id: 3
 
-INSERT INTO role (id, title, salary, department_id)
-VALUES (3, 'Head of Operations', 160000, 1);
+INSERT INTO role (title, salary, department_id)
+VALUES ('Accountant', 750000, 4);               -------> id: 4
 
-INSERT INTO role (id, title, salary, department_id)
-VALUES (4, 'Accountant', 750000, 4);
+INSERT INTO role (title, salary, department_id)
+VALUES ('Sales Lead', 150000, 3);               -------> id: 5
 
-INSERT INTO role (id, title, salary, department_id)
-VALUES (5, 'Sales Lead', 150000, 3);
+INSERT INTO role (title, salary, department_id)
+VALUES ('Project Manager', 120000, 2);          -------> id: 6
 
-INSERT INTO role (id, title, salary, department_id)
-VALUES (6, 'Project Manager', 120000, 2);
+INSERT INTO role (title, salary, department_id)
+VALUES ('Service Manager', 110000, 5);          -------> id: 7
 
-INSERT INTO role (id, title, salary, department_id)
-VALUES (7, 'Service Manager', 110000, 5);
+INSERT INTO role (title, salary, department_id)
+VALUES ('Lead Service Technician', 80000, 5);   -------> id: 8
 
-INSERT INTO role (id, title, salary, department_id)
-VALUES (8, 'Lead Service Technician', 80000, 5);
+INSERT INTO role (title, salary, department_id)
+VALUES ('Service Technician', 52000, 5);        -------> id: 9
 
-INSERT INTO role (id, title, salary, department_id)
-VALUES (9, 'Service Technician', 52000, 5);
+INSERT INTO role (title, salary, department_id)
+VALUES ('Head of Sales', 200000, 3);            -------> id: 10
 
-INSERT INTO role (id, title, salary, department_id)
-VALUES (10, 'Head of Sales', 200000, 3);
+--//////////// EMPLOYEE SEEDS ////////////--
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ('Matt', 'Majia', 1, null);                              -------> id: 1
 
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ('Doug', 'McKibbon', 3, 1);                              -------> id: 2
 
-INSERT INTO employee (id, first_name, last_name, role_id, manager_id)
-VALUES (1, 'Matt', 'Majia', 1, null);
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ('Janet', 'Svinovski', 2, null);                         -------> id: 3
 
-INSERT INTO employee (id, first_name, last_name, role_id, manager_id)
-VALUES (2, 'Doug', 'McKibbon', 3, 1);
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ('Claire', 'Powell', 4, 3);                              -------> id: 4
 
-INSERT INTO employee (id, first_name, last_name, role_id, manager_id)
-VALUES (3, 'Janet', 'Svinovski', 2, null);
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ('Gregg', 'Nelson', 10, null);                           -------> id: 5
 
-INSERT INTO employee (id, first_name, last_name, role_id, manager_id)
-VALUES (4, 'Claire', 'Powell', 4, 3);
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ('Michael', 'Moore', 5, 5);                              -------> id: 6
 
-INSERT INTO employee (id, first_name, last_name, role_id, manager_id)
-VALUES (5, 'Gregg', 'Nelson', 10, null);
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ('Cory', 'Tiesel', 5, 5);                                -------> id: 7
 
-INSERT INTO employee (id, first_name, last_name, role_id, manager_id)
-VALUES (6, 'Michael', 'Moore', 5, 5);
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ('John', 'Sapp', 6, 2);                                  -------> id: 8
 
-INSERT INTO employee (id, first_name, last_name, role_id, manager_id)
-VALUES (7, 'Cory', 'Tiesel', 5, 5);
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ('Sally', 'Wright', 7, null);                            -------> id: 9
 
-INSERT INTO employee (id, first_name, last_name, role_id, manager_id)
-VALUES (8, 'John', 'Sapp', 6, 2);
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ('Bryan', 'Durushia', 8, 9);                             -------> id: 10
 
-INSERT INTO employee (id, first_name, last_name, role_id, manager_id)
-VALUES (9, 'Sally', 'Wright', 7, null);
-
-INSERT INTO employee (id, first_name, last_name, role_id, manager_id)
-VALUES (10, 'Bryan', 'Durushia', 8, 9);
-
-INSERT INTO employee (id, first_name, last_name, role_id, manager_id)
-VALUES (11, 'Caleb', 'Lefley', 9, 9);
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ('Caleb', 'Lefley', 9, 9);                               -------> id: 11
 
