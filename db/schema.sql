@@ -43,7 +43,7 @@ INSERT INTO role (title, salary, department_id)
 VALUES ('CEO', 200000, 1);
 
 INSERT INTO role (title, salary, department_id)
-VALUES ('CFO', 200000, 1);
+VALUES ('CFO', 200000, 4);
 
 INSERT INTO role (title, salary, department_id)
 VALUES ('Head of Operations', 160000, 1);

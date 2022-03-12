@@ -33,7 +33,7 @@ function introPrompt() {
       ]
     }
   ])
-  .then(function({ choice }) {
+  .then(({ choice }) => {
     switch (choice) {
       case 'View All Departments':
         viewAllDepartments();
@@ -71,8 +71,9 @@ function introPrompt() {
 }
 
 function viewAllDepartments() {
-  db.query('SELECT department.name AS Departments, department.id AS ID FROM `department`',
-    function(err, results) {
+  db.query(`SELECT department.name AS Departments, department.id AS ID 
+            FROM department;`,
+    (err, results) => {
       if (err) throw err;
       console.table(results);
       introPrompt();
@@ -82,8 +83,12 @@ function viewAllDepartments() {
 
 
 function viewAllRoles() {
-  db.query('SELECT role.title AS Job_Title, role.id AS Role_ID, department.name AS Department, role.salary AS Salary FROM `department` JOIN `role` ON department.id = role.department_id ORDER BY department.id',
-    function(err, results) {
+  db.query(`SELECT role.title AS Job_Title, role.id AS Role_ID, 
+            department.name AS Department, role.salary AS Salary 
+            FROM department 
+            JOIN role ON department.id = role.department_id 
+            ORDER BY department.id;`,
+    (err, results) => {
       if (err) throw err;
       console.table(results);
       introPrompt();
@@ -93,7 +98,19 @@ function viewAllRoles() {
 
 
 function viewAllEmployees() {
-  console.log('Employees');
+  db.query(`SELECT employee.first_name, employee.last_name, role.title AS Title, 
+            role.salary AS Salary, department.name AS Department, 
+            CONCAT(Manager.first_name, ' ', Manager.last_name) AS Manager 
+            FROM employee 
+            INNER JOIN role ON employee.role_id = role.id 
+            INNER JOIN department ON role.department_id = department.id
+            LEFT JOIN employee Manager ON employee.manager_id = Manager.id;`,
+    (err, results) => {
+      if (err) throw err;
+      console.table(results);
+      introPrompt();
+    }
+  );
 }
 
 
