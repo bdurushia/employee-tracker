@@ -15,12 +15,6 @@ connection.connect(err => {
   introPrompt();
 });
 
-class DB {
-  constructor(connection) {
-    this.connection = connection;
-  }
-}
-
 function introPrompt() {
   inquirer.prompt([
     {
@@ -28,13 +22,14 @@ function introPrompt() {
       name: 'choice',
       message: 'What do you want to do? Select an option below: ',
       choices: [
-        'View All Departments',
-        'View All Roles',
-        'View All Employees',
         'Add a Department',
         'Add a Role',
         'Add an Employee',
+        'View All Departments',
+        'View All Roles',
+        'View All Employees',
         'Update an Employee Role',
+        // 'Clear a Table', --> Will utilize this at a later date
         'End Program'
       ]
     }
@@ -69,6 +64,10 @@ function introPrompt() {
         selectEmployee();
         break;
 
+      case 'Clear a Table':
+        clearTable();
+        break;
+
       case 'End Program':
         connection.end();
         break;
@@ -92,11 +91,9 @@ function viewAllDepartments() {
 
 function viewAllRoles() {
   connection.query(`
-    SELECT role.title AS Job_Title, role.id AS Role_ID, 
-    department.name AS Department, role.salary AS Salary 
-    FROM department 
-    JOIN role ON department.id = role.department_id 
-    ORDER BY department.id;
+    SELECT 
+    role.id, role.title, role.salary
+    FROM role;
     `,
     (err, results) => {
       if (err) throw err;
@@ -144,31 +141,33 @@ function addDepartment() {
         console.table(answer);
         introPrompt();
       }
-      )
-  })
+    );
+  });
 }
 
 
 function addRole() {
-  connection.query(`SELECT role.title AS Job_Title, role.salary AS Salary 
-            FROM role;`,
+  connection.query(`
+    SELECT 
+    role.title, role.salary 
+    FROM role;`,
     () => {
       inquirer.prompt([
         {
           type: 'input',
-          name: 'title',
+          name: 'roleName',
           message: 'ENTER the title of the role you would like to add:'
         },
         {
           type: 'input',
-          name: 'salary',
+          name: 'salaryInput',
           message: 'ENTER the salary of the role:'
         }
       ]).then(answer => {
           connection.query(`INSERT INTO role SET ? `,
             {
-              title: answer.title,
-              salary: answer.salary
+              title: answer.roleName,
+              salary: answer.salaryInput
             },
             (err, answer) => {
               if (err) throw err;
@@ -262,13 +261,6 @@ function addEmployee() {
   });
 }
 
-// SELECT DISTINCT(role.title),
-// role.id, role.salary, employee.role_id, employee.id,
-// CONCAT(Employee.first_name, ' ', Employee.last_name) AS Employee
-// FROM employee
-// INNER JOIN role
-// ON role.id = employee.role_id;
-
 function selectEmployee() {
   let query = `
     SELECT 
@@ -297,7 +289,7 @@ function selectEmployee() {
     .then(answer => {
       let EmployeeName = answer.employeeName 
       updateRole(EmployeeName);
-    })
+    });
   });
 }
 
@@ -309,8 +301,6 @@ function updateRole(EmployeeName) {
     `;
   connection.query(query, (err, res) => {
     if (err) throw err;
-
-    console.table(res);
 
     const roleChoices = res.map(({ id, title }) => ({
       name: title,
@@ -328,8 +318,6 @@ function updateRole(EmployeeName) {
     .then(answer => {
       let roleChosen = answer.roleChoice;
       let employeeChosen = EmployeeName;
-      console.log(roleChosen);
-      console.log(employeeChosen);
         connection.query(`
           UPDATE employee
           SET employee.role_id = ${roleChosen}
@@ -341,9 +329,74 @@ function updateRole(EmployeeName) {
             console.table(res);
             introPrompt();
           }
-        )
+        );
       }
-    )
-  })
+    );
+  });
 }
 
+// --------------------------------->>>>>>>>> Clear Function querys to be finish at a later date, currently not necessary for the acceptence criteria
+// function clearTable() {
+//   inquirer.prompt(
+//     {
+//       type: 'list',
+//       name: 'choice',
+//       message: 'Which table would you like to clear?',
+//       choices: ['Departments', 'Roles', 'Employees', 'CANCEL CLEAR OPTION']
+//     }
+//   ).then(({ choice }) => {
+//     switch (choice) {
+//       case 'Departments':
+//         clearDepartments();
+//         break;
+      
+//       case 'Roles':
+//         clearRoles();
+//         break;
+      
+//       case 'Employees':
+//         clearEmployees();
+//         break;
+      
+//       case 'CANCEL CLEAR OPTION':
+//         introPrompt();
+//         break;
+//     }
+//   });
+// }
+
+// function clearDepartments(){
+//   let query = `TRUNCATE department;`
+//   connection.query(query, (err, res) => {
+//     if (err) throw err;
+
+//     console.table(res);
+
+//     console.log('Departments table data cleared!');
+//     introPrompt();
+//   });
+// }
+
+// function clearRoles(){
+//   let query = `TRUNCATE TABLE role;`
+//   connection.query(query, (err, res) => {
+//     if (err) throw err;
+
+//     console.table(res);
+
+//     console.log('Roles table data cleared!');
+//     introPrompt();
+//   });
+// }
+
+// function clearEmployees(){
+//   let query = `TRUNCATE employee;`
+//   connection.query(query, (err, res) => {
+//     if (err) throw err;
+
+//     console.table(res);
+
+//     console.log('Employee table data cleared!');
+//     introPrompt();
+//   });
+// }

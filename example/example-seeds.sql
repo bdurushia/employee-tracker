@@ -14,10 +14,13 @@ INSERT INTO role (title, salary, department_id)
 VALUES ('CEO', 200000, 1);
 
 INSERT INTO role (title, salary, department_id)
-VALUES ('CFO', 200000, 1);
+VALUES ('CFO', 200000, 4);
 
 INSERT INTO role (title, salary, department_id)
 VALUES ('Head of Operations', 160000, 1);
+
+INSERT INTO role (title, salary, department_id)
+VALUES ('Head of Sales', 200000, 3);
 
 INSERT INTO role (title, salary, department_id)
 VALUES ('Accountant', 750000, 4);
@@ -37,9 +40,6 @@ VALUES ('Lead Service Technician', 80000, 5);
 INSERT INTO role (title, salary, department_id)
 VALUES ('Service Technician', 52000, 5);
 
-INSERT INTO role (title, salary, department_id)
-VALUES ('Head of Sales', 200000, 3);
-
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES ('Matt', 'Majia', 1, null);
@@ -51,26 +51,25 @@ INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES ('Janet', 'Svinovski', 2, null);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ('Claire', 'Powell', 4, 3);
+VALUES ('Gregg', 'Nelson', 4, null);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ('Gregg', 'Nelson', 10, null);
+VALUES ('Claire', 'Powell', 5, 3);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ('Michael', 'Moore', 5, 5);
+VALUES ('Michael', 'Moore', 6, 4);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ('Cory', 'Tiesel', 5, 5);
+VALUES ('Cory', 'Tiesel', 6, 4);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ('John', 'Sapp', 6, 2);
+VALUES ('John', 'Sapp', 7, 2);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ('Sally', 'Wright', 7, null);
+VALUES ('Sally', 'Wright', 8, 2);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ('Bryan', 'Durushia', 8, 9);
+VALUES ('Bryan', 'Durushia', 9, 9);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ('Caleb', 'Lefley', 9, 9);
-
+VALUES ('Caleb', 'Lefley', 10, 9);
