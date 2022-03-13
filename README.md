@@ -31,9 +31,10 @@
   No tests written.
 
   ## Credits
-  - Built by: Bryan Durushia
+  - Built by: [Bryan Durushia](https://www.linkedin.com/in/bdurushia/)
 
-  - Technologies used: Node.js, Node Package Manager, NPM Inquirer, NPM Console.Table, MySql.
+  - Technologies used: 
+  -- Node.js, Node Package Manager, NPM Inquirer, NPM Console.Table, MySql.
 
   - [https://www.w3schools.com/mySQl/default.asp](https://www.w3schools.com/mySQl/default.asp)
 
