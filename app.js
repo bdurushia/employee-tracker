@@ -184,7 +184,8 @@ function addRole() {
 
 function addEmployee() {
   let query = `
-    SELECT DISTINCT role.id, role.title, employee.role_id,
+    SELECT DISTINCT
+    role.id, role.title, employee.role_id, employee.manager_id,
     CONCAT(Manager.first_name, ' ', Manager.last_name) AS Manager
     FROM employee
     INNER JOIN role
@@ -205,6 +206,8 @@ function addEmployee() {
       value: manager_id
     }));
 
+    console.log(managerChoices);
+
     inquirer.prompt([
       {
         type: 'input',
@@ -218,7 +221,7 @@ function addEmployee() {
       },
       {
         type: 'list',
-        name: 'role',
+        name: 'roleID',
         message: 'Select their role/job title:',
         choices: roleChoices
       },
@@ -230,7 +233,7 @@ function addEmployee() {
       },
       {
         type: 'list',
-        name: 'manager',
+        name: 'managerID',
         message: 'Choose their manager',
         choices: managerChoices,
         when: ({chooseManagerConfirm}) => {
@@ -241,7 +244,23 @@ function addEmployee() {
           }
         }
       }
-    ]);
+    ])
+    .then(answer => {
+      connection.query(`INSERT INTO employee SET ? `,
+        {
+          first_name: answer.firstName,
+          last_name: answer.lastName,
+          role_id: answer.roleID,
+          manager_id: answer.managerID
+        },
+        (err, answer) => {
+          if (err) throw err;
+          
+          console.table(answer);
+          introPrompt();
+        }
+      )
+    })
   });
 }
 
