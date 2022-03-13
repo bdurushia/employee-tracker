@@ -138,20 +138,30 @@ function addDepartment() {
       (err, answer) => {
         if (err) throw err;
         
-        console.table(answer);
+        console.log('Department added to database!');
         introPrompt();
       }
     );
   });
 }
 
-
 function addRole() {
   connection.query(`
-    SELECT 
-    role.title, role.salary 
-    FROM role;`,
-    () => {
+    SELECT
+    role.id, role.title, role.salary, role.department_id,
+    department.id, department.name
+    FROM role
+    INNER JOIN department
+    ON role.department_id = department.id
+    ;`,
+    (err, res) => {
+      if (err) throw err;
+
+      const departmentChoices = res.map(({ department_id, name }) => ({
+        name: name,
+        value: department_id
+      }));
+
       inquirer.prompt([
         {
           type: 'input',
@@ -162,17 +172,24 @@ function addRole() {
           type: 'input',
           name: 'salaryInput',
           message: 'ENTER the salary of the role:'
+        },
+        {
+          type: 'list',
+          name: 'departmentInput',
+          message: 'Choose the department they belong to:',
+          choices: departmentChoices
         }
       ]).then(answer => {
           connection.query(`INSERT INTO role SET ? `,
             {
               title: answer.roleName,
-              salary: answer.salaryInput
+              salary: answer.salaryInput,
+              department_id: answer.departmentInput
             },
             (err, answer) => {
               if (err) throw err;
               
-              console.table(answer);
+              console.log('Role added to database!');
               introPrompt();
             }
           );
@@ -253,7 +270,7 @@ function addEmployee() {
         (err, answer) => {
           if (err) throw err;
           
-          console.table(answer);
+          console.table('Employee added to database!');
           introPrompt();
         }
       )
@@ -270,8 +287,6 @@ function selectEmployee() {
     `;
   connection.query(query, (err, res) => {
     if (err) throw err;
-
-    console.table(res);
 
     const employeeChoices = res.map(({ id, Employee }) => ({
       name: Employee,
@@ -326,7 +341,7 @@ function updateRole(EmployeeName) {
           (err, res) => {
             if (err) throw err;
 
-            console.table(res);
+            console.log('Employee updated!');
             introPrompt();
           }
         );
