@@ -65,8 +65,8 @@ function introPrompt() {
         addEmployee();
         break;
 
-      case 'Update am Employee Role':
-        updateEmployeeRole();
+      case 'Update an Employee Role':
+        selectEmployee();
         break;
 
       case 'End Program':
@@ -191,7 +191,7 @@ function addEmployee() {
     INNER JOIN role
     ON employee.role_id = role.id
     INNER JOIN employee Manager
-    On employee.manager_id = Manager.id;
+    ON employee.manager_id = Manager.id;
     `;
   connection.query(query, (err, res) => {
     if (err) throw err;
@@ -205,8 +205,6 @@ function addEmployee() {
       name: Manager,
       value: manager_id
     }));
-
-    console.log(managerChoices);
 
     inquirer.prompt([
       {
@@ -264,8 +262,88 @@ function addEmployee() {
   });
 }
 
+// SELECT DISTINCT(role.title),
+// role.id, role.salary, employee.role_id, employee.id,
+// CONCAT(Employee.first_name, ' ', Employee.last_name) AS Employee
+// FROM employee
+// INNER JOIN role
+// ON role.id = employee.role_id;
 
-function updateEmployeeRole() {
-  console.log('Upadting employee role');
+function selectEmployee() {
+  let query = `
+    SELECT 
+    employee.id,
+    CONCAT(Employee.first_name, ' ', Employee.last_name) AS Employee
+    FROM employee;
+    `;
+  connection.query(query, (err, res) => {
+    if (err) throw err;
+
+    console.table(res);
+
+    const employeeChoices = res.map(({ id, Employee }) => ({
+      name: Employee,
+      value: id
+    }));
+
+    inquirer.prompt(
+      {
+        type: 'list',
+        name: 'employeeName',
+        message: 'Choose and employee to update their role:',
+        choices: employeeChoices
+      }
+    )
+    .then(answer => {
+      let EmployeeName = answer.employeeName 
+      updateRole(EmployeeName);
+    })
+  });
+}
+
+function updateRole(EmployeeName) {
+  let query = `
+    SELECT
+    role.id, role.title
+    FROM role;
+    `;
+  connection.query(query, (err, res) => {
+    if (err) throw err;
+
+    console.table(res);
+
+    const roleChoices = res.map(({ id, title }) => ({
+      name: title,
+      value: id
+    }));
+
+    inquirer.prompt(
+      {
+        type: 'list',
+        name: 'roleChoice',
+        message: 'Choose a role:',
+        choices: roleChoices
+      }
+    )
+    .then(answer => {
+      let roleChosen = answer.roleChoice;
+      let employeeChosen = EmployeeName;
+      console.log(roleChosen);
+      console.log(employeeChosen);
+        connection.query(`
+          UPDATE employee
+          SET employee.role_id = ${roleChosen}
+          WHERE employee.id = ${employeeChosen};
+          `,
+          (err, res) => {
+            if (err) throw err;
+
+            console.table(res);
+            introPrompt();
+          }
+        )
+      }
+    )
+  })
 }
 
