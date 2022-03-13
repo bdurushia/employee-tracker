@@ -182,21 +182,6 @@ function addRole() {
   );
 }
 
-// SELECT employee.first_name, employee.last_name, role.title AS Title, 
-// role.salary AS Salary, department.name AS Department, 
-// CONCAT(Manager.first_name, ' ', Manager.last_name) AS Manager 
-// FROM employee 
-// INNER JOIN role ON employee.role_id = role.id 
-// INNER JOIN department ON role.department_id = department.id
-// LEFT JOIN employee Manager ON employee.manager_id = Manager.id;
-
-// SELECT role.id, role.title, 
-// role.salary, role.department_id,
-// employee.manager_id, 
-// CONCAT(Manager.first_name, ' ', Manager.last_name) AS Manager
-// FROM role
-// INNER JOIN employee Manager ON employee.manager_id = Manager.id
-
 function addEmployee() {
   let query = `
     SELECT DISTINCT role.id, role.title, employee.role_id,
@@ -238,10 +223,23 @@ function addEmployee() {
         choices: roleChoices
       },
       {
+        type: 'confirm',
+        name: 'chooseManagerConfirm',
+        message: 'Do they have a manager?',
+        default: true
+      },
+      {
         type: 'list',
         name: 'manager',
         message: 'Choose their manager',
-        choices: managerChoices
+        choices: managerChoices,
+        when: ({chooseManagerConfirm}) => {
+          if (!chooseManagerConfirm) {
+            return false;
+          } else {
+            return true;
+          }
+        }
       }
     ]);
   });
