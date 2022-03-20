@@ -4,7 +4,7 @@ const mysql = require('mysql2');
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'mysqlpwd',
+  password: 'rootroot',
   database: 'employeeTrackerDB'
 });
 
@@ -221,13 +221,10 @@ function addEmployee() {
   connection.query(query, (err, res) => {
     if (err) throw err;
 
-    console.table(res);
-
     const roleChoices = res.map(({ id, title }) => ({
       name: title,
       value: id
     }));
-    console.log(roleChoices);
 
     inquirer.prompt([
       {
@@ -258,7 +255,6 @@ function addEmployee() {
 }
 
 function selectManager(roleChoice, emFirstName, emLastName) {
-  console.log(roleChoice);
   let query = `
     SELECT 
     employee.id,
@@ -388,6 +384,8 @@ function updateRole(EmployeeName) {
     );
   });
 }
+
+
 
 // --------------------------------->>>>>>>>> Clear Function querys to be finish at a later date, currently not necessary for the acceptence criteria
 // function clearTable() {
