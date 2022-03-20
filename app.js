@@ -4,7 +4,7 @@ const mysql = require('mysql2');
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'mysqlpwd',
+  password: 'rootroot',
   database: 'employeeTrackerDB'
 });
 
@@ -92,8 +92,8 @@ function viewAllDepartments() {
 function viewAllRoles() {
   connection.query(`
     SELECT 
-    role.id, role.title, role.salary
-    FROM role;
+    role.id, role.title, role.salary, role.department_id
+    FROM role ORDER BY role.department_id;
     `,
     (err, results) => {
       if (err) throw err;
@@ -112,7 +112,8 @@ function viewAllEmployees() {
     FROM employee 
     INNER JOIN role ON employee.role_id = role.id 
     INNER JOIN department ON role.department_id = department.id
-    LEFT JOIN employee Manager ON employee.manager_id = Manager.id;
+    LEFT JOIN employee Manager ON employee.manager_id = Manager.id
+    ORDER BY role.department_id;
     `,
     (err, results) => {
       if (err) throw err;
@@ -138,20 +139,26 @@ function addDepartment() {
       (err, answer) => {
         if (err) throw err;
         
-        console.table(answer);
+        console.log('Department added to database!');
         introPrompt();
       }
     );
   });
 }
 
-
 function addRole() {
   connection.query(`
-    SELECT 
-    role.title, role.salary 
-    FROM role;`,
-    () => {
+    SELECT department.name, department.id
+    FROM department;
+    `,
+    (err, res) => {
+      if (err) throw err;
+
+      const departmentChoices = res.map(({ id, name }) => ({
+        name: name,
+        value: id
+      }));
+
       inquirer.prompt([
         {
           type: 'input',
@@ -162,17 +169,24 @@ function addRole() {
           type: 'input',
           name: 'salaryInput',
           message: 'ENTER the salary of the role:'
+        },
+        {
+          type: 'list',
+          name: 'departmentInput',
+          message: 'Choose the department they belong to:',
+          choices: departmentChoices
         }
       ]).then(answer => {
           connection.query(`INSERT INTO role SET ? `,
             {
               title: answer.roleName,
-              salary: answer.salaryInput
+              salary: answer.salaryInput,
+              department_id: answer.departmentInput
             },
             (err, answer) => {
               if (err) throw err;
               
-              console.table(answer);
+              console.log('Role added to database!');
               introPrompt();
             }
           );
@@ -181,16 +195,28 @@ function addRole() {
   );
 }
 
+// SELECT DISTINCT
+// role.id, role.title AS Title, employee.role_id, employee.manager_id,
+// CONCAT(Manager.first_name, ' ', Manager.last_name) AS Manager
+// FROM employee
+// INNER JOIN role
+// ON employee.role_id = role.id
+// INNER JOIN employee Manager
+// ON employee.manager_id = Manager.id;
+
+// SELECT
+// role.id, role.title,
+// employee.manager_id, employee.role_id,
+// CONCAT(Manager.first_name, ' ', Manager.last_name) AS Manager
+// FROM role, employee
+// WHERE employee.role_id = role.id;
+
+
 function addEmployee() {
   let query = `
     SELECT DISTINCT
-    role.id, role.title, employee.role_id, employee.manager_id,
-    CONCAT(Manager.first_name, ' ', Manager.last_name) AS Manager
-    FROM employee
-    INNER JOIN role
-    ON employee.role_id = role.id
-    INNER JOIN employee Manager
-    ON employee.manager_id = Manager.id;
+    role.id, role.title, role.salary
+    FROM role;
     `;
   connection.query(query, (err, res) => {
     if (err) throw err;
@@ -198,11 +224,6 @@ function addEmployee() {
     const roleChoices = res.map(({ id, title }) => ({
       name: title,
       value: id
-    }));
-
-    const managerChoices = res.map(({ manager_id, Manager }) => ({
-      name: Manager,
-      value: manager_id
     }));
 
     inquirer.prompt([
@@ -221,7 +242,35 @@ function addEmployee() {
         name: 'roleID',
         message: 'Select their role/job title:',
         choices: roleChoices
-      },
+      }
+    ])
+    .then(answer => {
+      let roleChoice = answer.roleID;
+      let emFirstName = answer.firstName;
+      let emLastName = answer.lastName;
+      selectManager(roleChoice, emFirstName, emLastName);
+    })
+    
+  });
+}
+
+function selectManager(roleChoice, emFirstName, emLastName) {
+  let query = `
+    SELECT 
+    employee.id,
+    CONCAT(Employee.first_name, ' ', Employee.last_name) AS Employee
+    FROM employee;
+    `;
+
+  connection.query(query, (err, res) => {
+    if (err) throw err;
+
+    const managerChoices = res.map(({ id, Employee }) => ({
+      name: Employee,
+      value: id
+    }));
+
+    inquirer.prompt([
       {
         type: 'confirm',
         name: 'chooseManagerConfirm',
@@ -245,21 +294,24 @@ function addEmployee() {
     .then(answer => {
       connection.query(`INSERT INTO employee SET ? `,
         {
-          first_name: answer.firstName,
-          last_name: answer.lastName,
-          role_id: answer.roleID,
+          first_name: emFirstName,
+          last_name: emLastName,
+          role_id: roleChoice,
           manager_id: answer.managerID
         },
-        (err, answer) => {
+        (err) => {
           if (err) throw err;
           
-          console.table(answer);
+          console.table('Employee added to database!');
           introPrompt();
         }
       )
     })
   });
 }
+
+
+
 
 function selectEmployee() {
   let query = `
@@ -270,8 +322,6 @@ function selectEmployee() {
     `;
   connection.query(query, (err, res) => {
     if (err) throw err;
-
-    console.table(res);
 
     const employeeChoices = res.map(({ id, Employee }) => ({
       name: Employee,
@@ -326,7 +376,7 @@ function updateRole(EmployeeName) {
           (err, res) => {
             if (err) throw err;
 
-            console.table(res);
+            console.log('Employee updated!');
             introPrompt();
           }
         );
@@ -334,6 +384,8 @@ function updateRole(EmployeeName) {
     );
   });
 }
+
+
 
 // --------------------------------->>>>>>>>> Clear Function querys to be finish at a later date, currently not necessary for the acceptence criteria
 // function clearTable() {
